@@ -1,6 +1,5 @@
 import json
 
-from django.core.serializers import json
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 
