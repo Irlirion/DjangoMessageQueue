@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from mq_json.views import register, send_message, get_messages
+from mq_json.views import register, send_message, get_messages, get_clients
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('register/', register, name='register', ),
+    path('register/', register, name='register'),
+    path('get_clients/', get_clients, name='get_clients'),
     path('send_message/', send_message, name='send_message'),
     path('get_messages/', get_messages, name='get_messages'),
 ]

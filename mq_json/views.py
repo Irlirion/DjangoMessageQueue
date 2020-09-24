@@ -1,9 +1,8 @@
+import json
+
 from django.core.serializers import json
-from django.db.models import QuerySet
-from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
-import json
 
 from mq_json.models import Client, Message
 
@@ -17,22 +16,36 @@ def register(request):
         return JsonResponse(json_data)
     return HttpResponseServerError('Only POST requests')
 
+
+@csrf_exempt
+def get_clients(request):
+    if request.method == 'POST':
+        clients_query = Client.objects.all()
+        json_data = {'clients': list(clients_query.values())}
+
+        return JsonResponse(json_data)
+    return HttpResponseServerError('Only POST requests')
+
+
 @csrf_exempt
 def send_message(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
         try:
-            message = Message()
-            sender_client = Client.objects.get(uuid=data["from_uuid"])
-            recipient_client = Client.objects.get(uuid=data["to_uuid"])
-            message.sender_uuid = sender_client
-            message.recipient_uuid = recipient_client
-            message.message = data["message"]
-            message.save()
+            data = json.loads(request.body)
+            try:
+                message = Message()
+                sender_client = Client.objects.get(uuid=data["from_uuid"])
+                recipient_client = Client.objects.get(uuid=data["to_uuid"])
+                message.sender_uuid = sender_client
+                message.recipient_uuid = recipient_client
+                message.message = data["message"]
+                message.save()
 
-            return JsonResponse({'status': 'OK'})
-        except KeyError:
-            return HttpResponseServerError("Bad json")
+                return JsonResponse({'status': 'OK'})
+            except KeyError:
+                return HttpResponseServerError("Json must contain 'from_uuid', 'to_uuid' and 'message'")
+        except json.decoder.JSONDecodeError:
+            return HttpResponseServerError("Request must contain json")
     return HttpResponseServerError('Only POST requests')
 
 @csrf_exempt
