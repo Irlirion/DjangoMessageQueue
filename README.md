@@ -1,4 +1,10 @@
 # DjangoMessageQueue
+## Install
+1. Install Django: `python -m pip install Django`
+2. Clone repo: `git clone https://github.com/Irlirion/DjangoMessageQueue.git`
+3. Go to server directory: `cd DjangoMessageQueue`
+4. Run server: `py manage.py runserver`
+
 ## Usage
 1. Send POST request to your_site_url/register/
 2. Get JSON request with "uuid" and save it
