@@ -48,13 +48,15 @@ def send_message(request):
             return HttpResponseServerError("Request must contain json")
     return HttpResponseServerError('Only POST requests')
 
+
 @csrf_exempt
 def get_messages(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         try:
             messages_query = Message.objects.filter(recipient_uuid=data["uuid"])
-            messages = [{"message": message.message, "from_uuid": message.sender_uuid.uuid} for message in messages_query]
+            messages = [{"message": message.message, "from_uuid": message.sender_uuid.uuid} for message in
+                        messages_query]
             send_data = {"messages": messages}
 
             # Message.objects.filter(recipient_uuid=data["uuid"]).delete()
